@@ -1,69 +1,53 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
+const Counter = ({ max, step }) => {
+  const [count, setCount] = useState(0);
+  const [resetVal, setResetVal] = useState(false);
+  const [timmer, setTimmer] = useState(null);
 
-class Counter extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      counter: 0,
-    };
-    this.updateDocumentTitle = this.updateDocumentTitle.bind(this);
-    this.increment = this.increment.bind(this);
-    this.decrement = this.decrement.bind(this)
-    this.reset = this.reset.bind(this)
-  }
+  useEffect(() => {
+    document.title = `Counter: ${count}`;
+  }, []);
 
-  updateDocumentTitle(){
-    document.title = `Counter : ${Object.keys(this.state).length === 0 ? "0":this.state.counter}`;
-  }
+  useEffect(() => {
+    document.title = `Counter: ${count}`;
+    if (resetVal) {
+      const t = setTimeout(() => {
+        setResetVal(false);
+      }, 3000);
+      return () => {
+        clearTimeout(t);
+      };
+    }
+  }, [count]);
 
+  const increment = () => {
+    setCount((c) => (c >= max ? c : c + step));
+    console.log('Before', count);
+  };
 
-  increment() {
-    //Merge the Objects
-    // this.setState({ counter: this.state.counter + 1 });
+  const decrement = () => {
+    setCount((c) => (c > 0 ? c - 1 : c));
+  };
 
-    //Passing the Function
-    /* The this.setState is higher order function take callback function , 
-    the callback function have two parameters state and counter props */
-    this.setState((state, props) => {
-      const { max, step } = props;
-      if (state.counter >= max) return;
-      return { counter: state.counter + step };
-    },()=>{
-      this.updateDocumentTitle()
-    });
-    console.log("Before setting",this.state);
-  }
+  const reset = () => {
+    setResetVal(true);
+    setCount(0);
+  };
 
-  decrement() {
-    this.setState((state) => {
-      if (state.counter === 0) return;
-      return { counter: state.counter - 1 };
-    },()=>{
-      this.updateDocumentTitle()
-    });
-  }
-
-  reset() {
-    this.setState((state) => {
-      return { counter: 0 };
-    },()=>{
-      this.updateDocumentTitle()
-    });
-  }
-
-  render() {
-    const { counter } = this.state;
+  if (resetVal) {
+    return <div>Resetting the value ....</div>;
+  } else {
     return (
       <div className="Counter">
-        <p className="count">{counter}</p>
+        <p className="count">{count}</p>
         <section className="controls">
-          <button onClick={this.increment}>Increment</button>
-          <button onClick={this.decrement}>Decrement</button>
-          <button onClick={this.reset}>Reset</button>
+          <button onClick={increment}>Increment</button>
+          <button onClick={decrement}>Decrement</button>
+          <button onClick={reset}>Reset</button>
         </section>
       </div>
     );
   }
-}
+};
 
 export default Counter;
