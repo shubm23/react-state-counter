@@ -6,10 +6,16 @@ class Counter extends Component {
     this.state = {
       counter: 0,
     };
+    this.updateDocumentTitle = this.updateDocumentTitle.bind(this);
     this.increment = this.increment.bind(this);
     this.decrement = this.decrement.bind(this)
     this.reset = this.reset.bind(this)
   }
+
+  updateDocumentTitle(){
+    document.title = `Counter : ${Object.keys(this.state).length === 0 ? "0":this.state.counter}`;
+  }
+
 
   increment() {
     //Merge the Objects
@@ -22,19 +28,26 @@ class Counter extends Component {
       const { max, step } = props;
       if (state.counter >= max) return;
       return { counter: state.counter + step };
+    },()=>{
+      this.updateDocumentTitle()
     });
+    console.log("Before setting",this.state);
   }
 
   decrement() {
     this.setState((state) => {
       if (state.counter === 0) return;
       return { counter: state.counter - 1 };
+    },()=>{
+      this.updateDocumentTitle()
     });
   }
 
   reset() {
     this.setState((state) => {
       return { counter: 0 };
+    },()=>{
+      this.updateDocumentTitle()
     });
   }
 
