@@ -6,6 +6,9 @@ class Counter extends Component {
     this.state = {
       counter: 0,
     };
+    this.increment = this.increment.bind(this);
+    this.decrement = this.decrement.bind(this)
+    this.reset = this.reset.bind(this)
   }
 
   increment() {
@@ -41,9 +44,9 @@ class Counter extends Component {
       <div className="Counter">
         <p className="count">{counter}</p>
         <section className="controls">
-          <button onClick={this.increment.bind(this)}>Increment</button>
-          <button onClick={this.decrement.bind(this)}>Decrement</button>
-          <button onClick={this.reset.bind(this)}>Reset</button>
+          <button onClick={this.increment}>Increment</button>
+          <button onClick={this.decrement}>Decrement</button>
+          <button onClick={this.reset}>Reset</button>
         </section>
       </div>
     );
