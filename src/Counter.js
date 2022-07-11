@@ -1,20 +1,5 @@
 import React, { Component } from 'react';
 
-const increment = (state, props) => {
-  const { max, step } = props;
-  if (state.counter >= max) return;
-  return { counter: state.counter + step };
-};
-
-const decrement = (state) => {
-  if (state.counter === 0) return;
-  return { counter: state.counter - 1 };
-};
-
-const reset = (state) => {
-  return { counter: 0 };
-};
-
 class Counter extends Component {
   constructor(props) {
     super(props);
@@ -26,19 +11,28 @@ class Counter extends Component {
   increment() {
     //Merge the Objects
     // this.setState({ counter: this.state.counter + 1 });
-    
+
     //Passing the Function
     /* The this.setState is higher order function take callback function , 
     the callback function have two parameters state and counter props */
-    this.setState(increment);
+    this.setState((state, props) => {
+      const { max, step } = props;
+      if (state.counter >= max) return;
+      return { counter: state.counter + step };
+    });
   }
 
   decrement() {
-    this.setState(decrement);
+    this.setState((state) => {
+      if (state.counter === 0) return;
+      return { counter: state.counter - 1 };
+    });
   }
 
   reset() {
-    this.setState(reset);
+    this.setState((state) => {
+      return { counter: 0 };
+    });
   }
 
   render() {
