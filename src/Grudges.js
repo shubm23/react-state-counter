@@ -2,6 +2,7 @@ import React from 'react';
 import Grudge from './Grudge';
 
 const Grudges = ({ grudges = [], onForgive }) => {
+  console.log("Rendering the Grudges Component");
   return (
     <section className="Grudges">
       <h2>Grudges ({grudges.length})</h2>
@@ -12,4 +13,4 @@ const Grudges = ({ grudges = [], onForgive }) => {
   );
 };
 
-export default Grudges;
+export default React.memo(Grudges);

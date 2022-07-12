@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,memo} from 'react';
 
 const NewGrudge = ({ onSubmit }) => {
   const [person, setPerson] = useState('');
@@ -8,7 +8,7 @@ const NewGrudge = ({ onSubmit }) => {
     event.preventDefault();
     onSubmit({ person, reason });
   };
-
+  console.log("Rendering the NewGrudge Component");
   return (
     <form className="NewGrudge" onSubmit={handleChange}>
       <input
@@ -30,4 +30,4 @@ const NewGrudge = ({ onSubmit }) => {
   );
 };
 
-export default NewGrudge;
+export default memo(NewGrudge);
