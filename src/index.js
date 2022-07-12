@@ -1,16 +1,10 @@
 import React from 'react';
-import { render } from 'react-dom';
-import Counter from './Counter';
-import './styles.scss';
+import ReactDOM from 'react-dom';
 
-const Application = () => {
-  return (
-    <main className="Application">
-      <section className="Counters">
-        <Counter max={15} step={5}  />
-      </section>
-    </main>
-  );
-};
+import Application from './Application';
 
-render(<Application />, document.getElementById('root'));
+import './styles.css';
+
+const rootElement = document.getElementById('root');
+
+ReactDOM.render(<Application />, rootElement);
