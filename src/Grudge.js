@@ -1,7 +1,9 @@
 import React from 'react';
+import { useGlobalContext } from './GrudgeContext';
 
 const Grudge = ({ grudge, onForgive }) => {
-  const forgive = () => onForgive(grudge.id);
+  const {toggleForgiveness} = useGlobalContext
+  const forgive = () => toggleForgiveness(grudge.id);
   console.log("Rendering the Grudge Component");
   return (
     <article className="Grudge">

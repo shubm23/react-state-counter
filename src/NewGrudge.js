@@ -1,14 +1,15 @@
-import React, { useState ,memo} from 'react';
+import React, { useState, memo } from 'react';
+import { useGlobalContext } from './GrudgeContext';
 
-const NewGrudge = ({ onSubmit }) => {
+const NewGrudge = () => {
   const [person, setPerson] = useState('');
   const [reason, setReason] = useState('');
-
-  const handleChange = event => {
+  const { addGrudge } = useGlobalContext();
+  const handleChange = (event) => {
     event.preventDefault();
-    onSubmit({ person, reason });
+    addGrudge({ person, reason });
   };
-  console.log("Rendering the NewGrudge Component");
+  console.log('Rendering the NewGrudge Component');
   return (
     <form className="NewGrudge" onSubmit={handleChange}>
       <input
@@ -16,14 +17,14 @@ const NewGrudge = ({ onSubmit }) => {
         placeholder="Person"
         type="text"
         value={person}
-        onChange={event => setPerson(event.target.value)}
+        onChange={(event) => setPerson(event.target.value)}
       />
       <input
         className="NewGrudge-input"
         placeholder="Reason"
         type="text"
         value={reason}
-        onChange={event => setReason(event.target.value)}
+        onChange={(event) => setReason(event.target.value)}
       />
       <input className="NewGrudge-submit button" type="submit" />
     </form>
