@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useReducer } from 'react';
 import ReactDOM from 'react-dom';
 
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -11,25 +11,53 @@ import endpoint from './endpoint';
 
 import './styles.scss';
 
+const LOADING = 'LOADING';
+
+const FETCH_COMPLETE = 'FETCH_COMPLETE';
+
+const FETCH_ERROR = 'FETCH_ERROR';
+
+const intialState = {
+  response: null,
+  loading: false,
+  error: null,
+};
+
+const fetchReducer = (state, action) => {
+  if (action.type === LOADING) {
+    return {
+      response: null,
+      loading: true,
+      error: null,
+    };
+  } else if (action.type === FETCH_COMPLETE) {
+    return {
+      response: action.payload.response,
+      loading: false,
+      error: null,
+    };
+  } else if (action.type === FETCH_ERROR) {
+    return {
+      response: null,
+      loading: false,
+      error: action.payload.error,
+    };
+  } else {
+    return state;
+  }
+};
 
 const useFetch = (url) => {
-  const [response, setResponse] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
+  const [{response,loading,error}, dispatch] = useReducer(fetchReducer, intialState);
   useEffect(() => {
-    setResponse(null);
-    setLoading(true);
-    setError(null);
+    dispatch({ type: LOADING });
     fetch(url)
       .then((res) => res.json())
       .then((res) => {
-        setLoading(false);
-        setResponse(res);
+        dispatch({ type: FETCH_COMPLETE, payload: { response: res } });
       })
-      .catch((err) => {
-        setLoading(false);
-        setError(err);
+      .catch((error) => {
+        dispatch({ type: FETCH_ERROR, payload: { error } });
       });
   }, []);
 
