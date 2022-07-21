@@ -1,9 +1,11 @@
-import React, { useState, useEffect,useReducer } from 'react';
+import React, { useState, useEffect, useReducer, useCallback } from 'react';
 import ReactDOM from 'react-dom';
+import { isFunction } from 'lodash';
 
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import CharacterList from './CharacterList';
+import CharacterView from './CharacterView';
 
 import dummyData from './dummy-data';
 
@@ -47,26 +49,44 @@ const fetchReducer = (state, action) => {
   }
 };
 
-const useFetch = (url) => {
-  const [{response,loading,error}, dispatch] = useReducer(fetchReducer, intialState);
-  useEffect(() => {
-    dispatch({ type: LOADING });
-    fetch(url)
-      .then((res) => res.json())
-      .then((res) => {
-        dispatch({ type: FETCH_COMPLETE, payload: { response: res } });
-      })
-      .catch((error) => {
-        dispatch({ type: FETCH_ERROR, payload: { error } });
-      });
-  }, []);
+const fetchData = (dispatch) => {
+  dispatch({ type: LOADING });
+  fetch(endpoint + '/characters')
+    .then((res) => res.json())
+    .then((res) => {
+      dispatch({ type: FETCH_COMPLETE, payload: { response: res } });
+    })
+    .catch((error) => {
+      dispatch({ type: FETCH_ERROR, payload: { error } });
+    });
+};
 
-  return [response, loading, error];
+const useThunkReducer = (reducer, intialState) => {
+  const [state, dispatch] = useReducer(reducer, intialState);
+
+  const enhancedReducer = useCallback(
+    (action) => {
+      console.log(action);
+      if (isFunction(action)) {
+        action(dispatch);
+      } else {
+        dispatch(action);
+      }
+    },
+    [dispatch],
+  );
+
+  return [state, enhancedReducer];
 };
 
 const Application = () => {
-  const [response, loading, error] = useFetch(endpoint + '/characters');
-  const characters = response ? response.characters : [];
+  const [state, dispatch] = useThunkReducer(fetchReducer, intialState);
+  const characters = state.response ? state.response.characters : [];
+
+  useEffect(() => {
+    dispatch((dispatch) => {});
+  }, []);
+
   return (
     <div className="Application">
       <header>
@@ -74,12 +94,18 @@ const Application = () => {
       </header>
       <main>
         <section className="sidebar">
-          {loading ? (
+          <button onClick={() => dispatch(fetchData)}>Fetch Characters</button>
+          {state.loading ? (
             <p>Loading....</p>
           ) : (
             <CharacterList characters={characters} />
           )}
-          {error && <p className="error">{error.message}</p>}
+          {state.error && <p className="error">{state.error.message}</p>}
+        </section>
+        <section className="CharacterView">
+          <Routes>
+            <Route path="/characters/:id" element={<CharacterView />} />
+          </Routes>
         </section>
       </main>
     </div>
